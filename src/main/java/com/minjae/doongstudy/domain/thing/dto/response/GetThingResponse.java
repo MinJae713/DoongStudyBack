@@ -15,18 +15,19 @@ public class GetThingResponse {
     private String name;
     private String description;
     private Integer price;
-    private ThingType type;
+    private String type;
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private Long memberId;
     private String memberName;
+    private Boolean isOwn;
 
-    public static GetThingResponse from(Thing thing) {
+    public static GetThingResponse from(Thing thing, Long ownerId) {
         Long thingId = thing.getThingId();
         String name = thing.getName();
         String description = thing.getDescription();
         Integer price = thing.getPrice();
-        ThingType type = thing.getType();
+        String type = thing.getType().getLabel();
         LocalDate createdAt = thing.getCreatedAt();
         LocalDate updatedAt = thing.getUpdatedAt();
         Member member = thing.getMember();
@@ -43,6 +44,7 @@ public class GetThingResponse {
                 .updatedAt(updatedAt)
                 .memberId(memberId)
                 .memberName(memberName)
+                .isOwn(memberId.equals(ownerId))
                 .build();
     }
 }

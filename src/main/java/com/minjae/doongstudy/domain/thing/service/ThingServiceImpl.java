@@ -23,16 +23,16 @@ public class ThingServiceImpl implements ThingService {
     private final ThingRepository thingRepository;
 
     @Override
-    public List<GetThingResponse> getThings() {
+    public List<GetThingResponse> getThings(Long memberId) {
         List<Thing> things = thingRepository.findAll();
-        return things.stream().map(GetThingResponse::from).toList();
+        return things.stream().map(thing -> GetThingResponse.from(thing, memberId)).toList();
     }
 
     @Override
-    public GetThingResponse getThingById(Long thingId) {
+    public GetThingResponse getThingById(Long thingId, Long memberId) {
         Thing thing = thingRepository.findById(thingId)
                 .orElseThrow(NoThingException::new);
-        return GetThingResponse.from(thing);
+        return GetThingResponse.from(thing, memberId);
     }
 
     @Override

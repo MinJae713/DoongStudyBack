@@ -17,14 +17,17 @@ import java.util.List;
 public class ThingController {
     private final ThingService thingService;
 
-    @GetMapping
-    public ResponseEntity<List<GetThingResponse>> getThings() {
-        return ResponseEntity.ok(thingService.getThings());
+    @GetMapping("/{memberId}")
+    public ResponseEntity<List<GetThingResponse>> getThings(
+            @PathVariable Long memberId) {
+        return ResponseEntity.ok(thingService.getThings(memberId));
     }
 
-    @GetMapping("/{thingId}")
-    public ResponseEntity<GetThingResponse> getThing(@PathVariable Long thingId) {
-        return ResponseEntity.ok(thingService.getThingById(thingId));
+    @GetMapping("/{thingId}/{memberId}")
+    public ResponseEntity<GetThingResponse> getThing(
+            @PathVariable Long thingId,
+            @PathVariable Long memberId) {
+        return ResponseEntity.ok(thingService.getThingById(thingId, memberId));
     }
 
     @PostMapping
