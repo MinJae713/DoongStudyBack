@@ -1,5 +1,6 @@
 package com.minjae.doongstudy.domain.thing.dto.response;
 
+import com.minjae.doongstudy.domain.member.entity.Member;
 import com.minjae.doongstudy.domain.thing.entity.Thing;
 import com.minjae.doongstudy.domain.thing.types.ThingType;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class GetThingResponse {
     private LocalDate createdAt;
     private LocalDate updatedAt;
     private Long memberId;
+    private String memberName;
 
     public static GetThingResponse from(Thing thing) {
         Long thingId = thing.getThingId();
@@ -27,7 +29,9 @@ public class GetThingResponse {
         ThingType type = thing.getType();
         LocalDate createdAt = thing.getCreatedAt();
         LocalDate updatedAt = thing.getUpdatedAt();
-        Long memberId = thing.getMember().getMemberId();
+        Member member = thing.getMember();
+        Long memberId = member.getMemberId();
+        String memberName = member.getName();
 
         return GetThingResponse.builder()
                 .thingId(thingId)
@@ -38,6 +42,7 @@ public class GetThingResponse {
                 .createdAt(createdAt)
                 .updatedAt(updatedAt)
                 .memberId(memberId)
+                .memberName(memberName)
                 .build();
     }
 }
