@@ -4,10 +4,14 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     #    각자 PC에 만들어놓은 Database이름을 써야 합니다.
-    url: jdbc:mysql://127.0.0.1:3306/doongdb # Database이름 ?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+#    url: jdbc:mysql://127.0.0.1:3306/doongdb
+    # 위는 로컬에서 돌릴 때 주소
+    url: ${DB_URL}
+    # 위는 도커로 띄울 떄 주소
+    # Database이름 ?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     #    mysql에 생성한 사용자 계정 정보를 써야 합니다.
-    username: root
-    password: Godyell713!
+    username: ${DB_USER}
+    password: ${DB_PW}
   thymeleaf:
     cache: false
 
