@@ -1,0 +1,25 @@
+version: "3"
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    restart: unless-stopped
+    container_name: doong_prometheus
+    volumes:
+      - ./prometheus.yml:/doong_prom/prometheus.yml # 로컬에서 컨테이너 쪽으로 설정파일 지정
+      - prometheus-data:/prometheus # 로컬에서 만든 볼륨 컨테이너 쪽 디렉토리 지정
+    command:
+      - "--config.file=/doong_prom/prometheus.yml" # 설정 파일
+      - "--storage.tsdb.path=/prometheus" # 수집 매트릭 저장 위치
+      - "--storage.tsdb.retention.time=1m" # 수집 매트릭 저장 기간
+      - "--web.enable-lifecycle" # HTTP API로 리로드 ㄱㄴ 여부
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    container_name: doong_ranfana
+    depends_on:
+      - prometheus
+volumes:
+  prometheus-data:

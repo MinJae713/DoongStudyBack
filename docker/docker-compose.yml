@@ -1,0 +1,57 @@
+version: "3"
+services:
+  mysqlDB:
+    image: mysql
+    ports:
+      - 3307:3306
+    container_name: doong_mysql_db
+    environment:
+      - MYSQL_DATABASE=doongdb
+      - MYSQL_ROOT_PASSWORD=Godyell713!
+#    networks:
+#      - doong_container_network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+  springServer:
+    image: doong_backend_image
+    ports:
+      - 8081:8080
+    container_name: doong_server
+#    networks:
+#      - doong_container_network
+    depends_on:
+      mysqlDB:
+        condition: service_healthy
+    environment:
+      - DB_URL=jdbc:mysql://mysqlDB:3306/doongdb
+      - DB_USER=root
+      - DB_PW=Godyell713!
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    container_name: doong_prometheus
+    depends_on:
+      - springServer
+    volumes:
+      - ./prometheus/prometheus.yml:/doong_config/prometheus.yml
+      - prometheus_metric:/prometheus
+    command:
+      - "--config.file=/doong_config/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=5m"
+      - "--web.enable-lifecycle"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    container_name: doong_ranfana
+    depends_on:
+      - prometheus
+volumes:
+  prometheus_metric:
+#networks:
+#  doong_container_network:
