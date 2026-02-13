@@ -37,6 +37,10 @@ dependencies {
     // Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
     implementation("org.springframework.boot:spring-boot-starter-validation:4.0.1")
     implementation 'org.springframework.boot:spring-boot-starter-security'
+    // Source: https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-actuator
+    implementation("org.springframework.boot:spring-boot-starter-actuator:4.0.1")
+    // Source: https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+    implementation("io.micrometer:micrometer-registry-prometheus:1.16.2")
 }
 
 tasks.named('test') {

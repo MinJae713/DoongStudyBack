@@ -21,3 +21,13 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+# actuator
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,env,loggers,prometheus
+  endpoint:
+    health:
+      show-details: always
