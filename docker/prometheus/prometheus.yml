@@ -5,4 +5,4 @@ scrape_configs:
   - job_name: 'doong_matric'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['springServer:8080']
+      - targets: ['158.247.211.116:8080']

@@ -1,0 +1,25 @@
+version: '3'
+services:
+  prometheus:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    container_name: doong_prometheus
+    restart: unless-stopped
+    volumes:
+      - ../prometheus/prometheus.yml:/config/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/config/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--storage.tsdb.retention.time=5m"
+      - "--web.enable-lifecycle"
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 3010:3000
+    container_name: doong_ranfana
+    depends_on:
+      - prometheus
+volumes:
+  prometheus_data:
