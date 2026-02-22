@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     volumes:
       - ../prometheus/prometheus.yml:/config/prometheus.yml
-      - prometheus_data:/prometheus
+      - prometheus_matric:/prometheus
     command:
       - "--config.file=/config/prometheus.yml"
       - "--storage.tsdb.path=/prometheus"
@@ -17,9 +17,9 @@ services:
   grafana:
     image: grafana/grafana
     ports:
-      - 3010:3000
+      - 3001:3000
     container_name: doong_ranfana
     depends_on:
       - prometheus
 volumes:
-  prometheus_data:
+  prometheus_matric:
