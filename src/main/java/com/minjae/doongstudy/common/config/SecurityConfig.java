@@ -2,6 +2,8 @@ package com.minjae.doongstudy.common.config;
 
 import com.minjae.doongstudy.common.security.JWTUtils;
 import com.minjae.doongstudy.common.security.JwtAuthenticationFilter;
+import com.minjae.doongstudy.common.security.JwtVerificationFilter;
+import com.minjae.doongstudy.common.security.SecurityExceptionFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -35,24 +37,26 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http, JWTUtils jwtUtils,
-               AuthenticationManager authenticationManager) throws Exception {
-        UsernamePasswordAuthenticationFilter authenticationFilter =
-                new JwtAuthenticationFilter(jwtUtils, authenticationManager);
+    public SecurityFilterChain filterChain(HttpSecurity http,
+                                           JwtAuthenticationFilter authenticationFilter,
+                                           JwtVerificationFilter verificationFilter,
+                                           SecurityExceptionFilter securityExceptionFilter) throws Exception {
         authenticationFilter.setFilterProcessesUrl("/api/member/login");
 
         http.formLogin(AbstractHttpConfigurer::disable)
             .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(verificationFilter, JwtAuthenticationFilter.class)
+            .addFilterBefore(securityExceptionFilter, JwtVerificationFilter.class)
             .cors(Customizer.withDefaults())
             .csrf(CsrfConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/member/login").permitAll()
-                    .anyRequest().permitAll() // 🔥 처음엔 전부 허용 추천
+                    .requestMatchers("/api/member/register").permitAll()
+                    .anyRequest().authenticated() // 🔥 처음엔 전부 허용 추천
             );
 
         return http.build();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

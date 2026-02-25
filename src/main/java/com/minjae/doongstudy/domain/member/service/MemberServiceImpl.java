@@ -12,6 +12,7 @@ import com.minjae.doongstudy.domain.member.exception.NoMemberException;
 import com.minjae.doongstudy.domain.member.repository.MemberRepository;
 import com.minjae.doongstudy.domain.thing.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public LoginResponse login(LoginRequest loginRequest) {
@@ -59,6 +61,7 @@ public class MemberServiceImpl implements MemberService {
         if (memberOptional.isPresent())
             throw new ExistMemberException();
         Member member = Member.from(registerRequest);
+        member.setPassword(passwordEncoder.encode(member.getPassword()));
         Member saved = memberRepository.save(member);
         return RegisterResponse.builder()
                 .apiResult(true)
