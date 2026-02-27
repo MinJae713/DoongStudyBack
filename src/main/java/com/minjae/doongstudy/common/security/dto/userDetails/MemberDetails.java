@@ -1,4 +1,4 @@
-package com.minjae.doongstudy.common.security;
+package com.minjae.doongstudy.common.security.dto.userDetails;
 
 import com.minjae.doongstudy.domain.member.entity.Member;
 import lombok.Data;

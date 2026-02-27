@@ -1,6 +1,7 @@
 package com.minjae.doongstudy.domain.thing.controller;
 
-import com.minjae.doongstudy.common.security.MemberDetails;
+import com.minjae.doongstudy.common.security.dto.principal.MemberPrincipal;
+import com.minjae.doongstudy.common.security.dto.userDetails.MemberDetails;
 import com.minjae.doongstudy.domain.thing.dto.request.CreateThingRequest;
 import com.minjae.doongstudy.domain.thing.dto.request.UpdateThingRequest;
 import com.minjae.doongstudy.domain.thing.dto.response.*;
@@ -22,7 +23,7 @@ public class ThingController {
     @GetMapping("/{memberId}")
     public ResponseEntity<List<GetThingResponse>> getThings(
             @PathVariable Long memberId,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(thingService.getThings(memberId));
     }
 
@@ -30,28 +31,28 @@ public class ThingController {
     public ResponseEntity<GetThingResponse> getThing(
             @PathVariable Long thingId,
             @PathVariable Long memberId,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(thingService.getThingById(thingId, memberId));
     }
 
     @PostMapping
     public ResponseEntity<CreateThingResponse> createThing(
             @Valid @RequestBody CreateThingRequest createThingRequest,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(thingService.createThing(createThingRequest));
     }
 
     @PatchMapping
     public ResponseEntity<UpdateThingResponse> updateThing(
             @Valid @RequestBody UpdateThingRequest updateThingRequest,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(thingService.updateThing(updateThingRequest));
     }
 
     @DeleteMapping("/{thingId}")
     public ResponseEntity<DeleteThingResponse> deleteThing(
             @PathVariable Long thingId,
-            @AuthenticationPrincipal MemberDetails memberDetails) {
+            @AuthenticationPrincipal MemberPrincipal memberPrincipal) {
         return ResponseEntity.ok(thingService.deleteThing(thingId));
     }
 }

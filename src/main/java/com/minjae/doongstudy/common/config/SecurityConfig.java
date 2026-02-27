@@ -1,9 +1,9 @@
 package com.minjae.doongstudy.common.config;
 
-import com.minjae.doongstudy.common.security.JWTUtils;
-import com.minjae.doongstudy.common.security.JwtAuthenticationFilter;
-import com.minjae.doongstudy.common.security.JwtVerificationFilter;
-import com.minjae.doongstudy.common.security.SecurityExceptionFilter;
+import com.minjae.doongstudy.common.security.filter.JwtAuthenticationFilter;
+import com.minjae.doongstudy.common.security.filter.JwtVerificationFilter;
+import com.minjae.doongstudy.common.security.filter.SecurityExceptionFilter;
+import com.minjae.doongstudy.common.security.service.MemberLogoutHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -16,6 +16,8 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,21 +42,27 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http,
                                            JwtAuthenticationFilter authenticationFilter,
                                            JwtVerificationFilter verificationFilter,
-                                           SecurityExceptionFilter securityExceptionFilter) throws Exception {
+                                           SecurityExceptionFilter securityExceptionFilter,
+                                           LogoutHandler logoutHandler) throws Exception {
         authenticationFilter.setFilterProcessesUrl("/api/member/login");
 
         http.formLogin(AbstractHttpConfigurer::disable)
             .addFilterAt(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(verificationFilter, JwtAuthenticationFilter.class)
-            .addFilterBefore(securityExceptionFilter, JwtVerificationFilter.class)
+            .addFilterBefore(securityExceptionFilter, LogoutFilter.class)
             .cors(Customizer.withDefaults())
             .csrf(CsrfConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/redisTest/**").permitAll() // Redis 동작 확인 위해 임시 지정
                     .requestMatchers("/api/member/login").permitAll()
                     .requestMatchers("/api/member/register").permitAll()
+                    .requestMatchers("/api/auth/**").permitAll()
                     .anyRequest().authenticated() // 🔥 처음엔 전부 허용 추천
+            )
+            .logout(logout -> logout
+                    .logoutUrl("/api/auth/logout")
+                    .addLogoutHandler(logoutHandler)
             );
-
         return http.build();
     }
 

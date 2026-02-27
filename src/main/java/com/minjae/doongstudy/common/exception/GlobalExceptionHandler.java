@@ -1,8 +1,11 @@
 package com.minjae.doongstudy.common.exception;
 
+import com.minjae.doongstudy.common.security.exception.InvalidRefreshTokenException;
+import com.minjae.doongstudy.common.security.types.SecurityExceptionType;
 import com.minjae.doongstudy.domain.member.exception.ExistMemberException;
 import com.minjae.doongstudy.domain.member.exception.NoMemberException;
 import com.minjae.doongstudy.domain.thing.exception.NoThingException;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -52,5 +55,22 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("message", exception.getMessage());
         return ResponseEntity.status(400).body(body);
+    }
+    @ExceptionHandler({
+            ExpiredJwtException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleExpiredJwtException(ExpiredJwtException exception) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", exception.getMessage());
+        body.put("type", SecurityExceptionType.REFRESH_TOKEN_EXPIRATION);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+    @ExceptionHandler({
+            InvalidRefreshTokenException.class
+    })
+    public ResponseEntity<Map<String, Object>> handleInvalidRefreshTokenException(InvalidRefreshTokenException exception) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("message", exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
     }
 }

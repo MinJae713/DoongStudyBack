@@ -25,33 +25,34 @@ public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-    @Override
-    public LoginResponse login(LoginRequest loginRequest) {
-        String email = loginRequest.getEmail();
-        Optional<Member> memberOptional = memberRepository.findByEmail(email);
-        if (memberOptional.isEmpty())
-            return LoginResponse.builder()
-                    .apiResult(false)
-                    .message("해당 사용자를 못찾았습니다")
-                    .name(null)
-                    .memberId(null)
-                    .build();
-        String password = loginRequest.getPassword();
-        Member member = memberOptional.orElse(null);
-        return member.getPassword().equals(password) ?
-                LoginResponse.builder()
-                        .apiResult(true)
-                        .message("로그인에 성공했습니다!")
-                        .name(member.getName())
-                        .memberId(member.getMemberId())
-                        .build() :
-                LoginResponse.builder()
-                        .apiResult(false)
-                        .message("비밀번호가 올바르지 않습니다")
-                        .name(null)
-                        .memberId(null)
-                        .build();
-    }
+//    @Override
+//    public LoginResponse login(LoginRequest loginRequest) {
+//        // Security에서 처리됨
+//        String email = loginRequest.getEmail();
+//        Optional<Member> memberOptional = memberRepository.findByEmail(email);
+//        if (memberOptional.isEmpty())
+//            return LoginResponse.builder()
+//                    .apiResult(false)
+//                    .message("해당 사용자를 못찾았습니다")
+//                    .name(null)
+//                    .memberId(null)
+//                    .build();
+//        String password = loginRequest.getPassword();
+//        Member member = memberOptional.orElse(null);
+//        return member.getPassword().equals(password) ?
+//                LoginResponse.builder()
+//                        .apiResult(true)
+//                        .message("로그인에 성공했습니다!")
+//                        .name(member.getName())
+//                        .memberId(member.getMemberId())
+//                        .build() :
+//                LoginResponse.builder()
+//                        .apiResult(false)
+//                        .message("비밀번호가 올바르지 않습니다")
+//                        .name(null)
+//                        .memberId(null)
+//                        .build();
+//    }
 
     @Override
     @Transactional

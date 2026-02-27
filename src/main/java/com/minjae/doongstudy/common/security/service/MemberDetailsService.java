@@ -1,5 +1,6 @@
-package com.minjae.doongstudy.common.security;
+package com.minjae.doongstudy.common.security.service;
 
+import com.minjae.doongstudy.common.security.dto.userDetails.MemberDetails;
 import com.minjae.doongstudy.domain.member.entity.Member;
 import com.minjae.doongstudy.domain.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;

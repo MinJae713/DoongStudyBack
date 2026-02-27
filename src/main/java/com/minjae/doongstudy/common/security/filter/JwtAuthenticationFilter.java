@@ -1,10 +1,15 @@
-package com.minjae.doongstudy.common.security;
+package com.minjae.doongstudy.common.security.filter;
 
+import com.minjae.doongstudy.common.util.jwt.JWTUtils;
+import com.minjae.doongstudy.common.security.dto.response.LoginResponse;
+import com.minjae.doongstudy.common.security.dto.userDetails.MemberDetails;
+import com.minjae.doongstudy.common.util.redis.RedisService;
 import com.minjae.doongstudy.domain.member.entity.Member;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,12 +25,18 @@ import java.util.Map;
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private ObjectMapper objectMapper;
     private JWTUtils jwtUtils;
+    private RedisService redisService;
+
+    @Value("${service.refresh-token-duration}")
+    private Long refreshTokenDuration;
 
     public JwtAuthenticationFilter(JWTUtils jwtUtils,
-               AuthenticationManager authenticationManager) {
+                                   AuthenticationManager authenticationManager,
+                                   RedisService redisService) {
         super(authenticationManager);
         this.objectMapper = new ObjectMapper();
         this.jwtUtils = jwtUtils;
+        this.redisService = redisService;
     }
 
     @Override
@@ -49,7 +60,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         MemberDetails memberDetails = (MemberDetails)authResult.getPrincipal();
         Member member = memberDetails.getMember();
         String accessToken = jwtUtils.createAccessToken(member);
-        LoginResponse loginResponse = LoginResponse.from(member, accessToken);
+        String refreshToken = jwtUtils.createRefreshToken(member);
+
+        redisService.saveRefreshToken(member.getMemberId(), refreshToken, refreshTokenDuration);
+
+        LoginResponse loginResponse = LoginResponse.from(member, accessToken, refreshToken);
         String responseBody = objectMapper.writeValueAsString(loginResponse);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
