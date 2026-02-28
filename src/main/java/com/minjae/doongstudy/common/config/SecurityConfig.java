@@ -18,6 +18,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -43,7 +44,8 @@ public class SecurityConfig {
                                            JwtAuthenticationFilter authenticationFilter,
                                            JwtVerificationFilter verificationFilter,
                                            SecurityExceptionFilter securityExceptionFilter,
-                                           LogoutHandler logoutHandler) throws Exception {
+                                           LogoutHandler logoutHandler,
+                                           LogoutSuccessHandler logoutSuccessHandler) throws Exception {
         authenticationFilter.setFilterProcessesUrl("/api/member/login");
 
         http.formLogin(AbstractHttpConfigurer::disable)
@@ -62,6 +64,7 @@ public class SecurityConfig {
             .logout(logout -> logout
                     .logoutUrl("/api/auth/logout")
                     .addLogoutHandler(logoutHandler)
+                    .logoutSuccessHandler(logoutSuccessHandler)
             );
         return http.build();
     }
