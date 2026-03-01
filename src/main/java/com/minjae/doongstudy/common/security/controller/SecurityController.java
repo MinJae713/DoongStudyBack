@@ -17,7 +17,6 @@ public class SecurityController {
     private final SecurityService securityService;
 
     @PostMapping("/refresh")
-    @Transactional
     public ResponseEntity<RefreshResponse> refresh(
             @RequestHeader("Refresh-Token") String refreshToken) {
         return ResponseEntity.ok(securityService.refresh(refreshToken));
