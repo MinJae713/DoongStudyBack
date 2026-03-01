@@ -42,5 +42,5 @@ management:
 # constants
 service:
   # redis token TTL (Second)
-  access-token-duration: 60
-  refresh-token-duration: 180
+  access-token-duration: ${access_duration}
+  refresh-token-duration: ${refresh_duration}
