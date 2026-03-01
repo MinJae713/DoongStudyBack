@@ -6,6 +6,5 @@ public interface RedisService {
     String get(String key);
     boolean hasKey(String key);
     boolean delete(String key);
-    void setBlackList(Long memberId, String accessToken, Long ttl);
     void saveRefreshToken(Long memberId, String refreshToken, Long ttl);
 }

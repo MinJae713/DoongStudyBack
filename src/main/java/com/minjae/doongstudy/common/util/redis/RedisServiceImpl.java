@@ -37,11 +37,6 @@ public class RedisServiceImpl implements RedisService{
     }
 
     @Override
-    public void setBlackList(Long memberId, String accessToken, Long ttl) {
-        save("blacklist:"+memberId, accessToken, ttl);
-    }
-
-    @Override
     public void saveRefreshToken(Long memberId, String refreshToken, Long ttl) {
         save("refresh:"+memberId, refreshToken, ttl);
     }

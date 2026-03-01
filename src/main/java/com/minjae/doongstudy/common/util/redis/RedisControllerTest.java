@@ -35,7 +35,7 @@ public class RedisControllerTest {
     @PostMapping("/blackList")
     public ResponseEntity<String> setBlackList() {
         Long memberId = 713L;
-        redisService.setBlackList(memberId, "qwer", 30L);
+        redisService.saveBlacklist("검은리스트", 60L);
         return ResponseEntity.ok("Set Black List Success");
     }
 }
